@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:geomasters/banderas.dart';
-import 'package:geomasters/capitales.dart';
-
+import 'pantalla_opciones.dart';
+import 'package:geomasters/modos/banderas.dart';
+import 'package:geomasters/modos/capitales.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -16,7 +16,37 @@ class BanderasCapitalesApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Banderas y Capitales',
-      theme: ThemeData(primarySwatch: Colors.blue),
+      theme: ThemeData(
+        // Colores principales
+        primaryColor: const Color(0xFF8CACA4), // Verde suave
+        colorScheme: ColorScheme.light(
+          primary: const Color(0xFF8CACA4), // Verde suave
+          secondary: const Color(0xFFB4A4AC), // Morado suave
+          surface: const Color.fromARGB(255, 227, 234, 241), // Gris azulado claro (reemplaza background por surface)
+        ),
+
+        // Fuente personalizada
+        fontFamily: 'Roboto', // Puedes cambiar 'Roboto' por la fuente que prefieras
+        textTheme: const TextTheme(
+          titleLarge: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.black), // Reemplaza headline6 por titleLarge
+          bodyLarge: TextStyle(fontSize: 18, color: Colors.black87), // Reemplaza bodyText1 por bodyLarge
+          bodyMedium: TextStyle(fontSize: 16, color: Colors.black87), // Reemplaza bodyText2 por bodyMedium
+          labelLarge: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white), // Reemplaza button por labelLarge
+        ),
+
+        // Estilo de los botones
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: const Color(0xFF8CACA4), // Reemplaza primary por backgroundColor
+            foregroundColor: Colors.white, // Color del texto del botón
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+            textStyle: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8), // Bordes redondeados
+            ),
+          ),
+        ),
+      ),
       initialRoute: '/',
       routes: {
         '/': (context) => const PantallaInicial(),
@@ -33,7 +63,7 @@ class PantallaInicial extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(context).colorScheme.surface, // Usa el color de fondo del tema
       body: GestureDetector(
         onTap: () {
           Navigator.push(
@@ -72,112 +102,6 @@ class PantallaInicial extends StatelessWidget {
             ),
           ],
         ),
-      ),
-    );
-  }
-}
-
-class PantallaOpciones extends StatefulWidget {
-  const PantallaOpciones({super.key});
-
-  @override
-  _PantallaOpcionesState createState() => _PantallaOpcionesState();
-}
-
-class _PantallaOpcionesState extends State<PantallaOpciones>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
-  late Animation<Alignment> _logoPositionAnimation;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = AnimationController(
-      duration: const Duration(milliseconds: 700),
-      vsync: this,
-    );
-
-    // Configuración de la animación de posición del logo
-    _logoPositionAnimation = AlignmentTween(
-      begin: Alignment.center,
-      end: const Alignment(0, -0.8),
-    ).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
-    );
-
-    // Inicia la animación del logo
-    _controller.forward().then((_) {
-      setState(() {}); // Refresca para mostrar los botones tras la animación
-    });
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: AnimatedBuilder(
-        animation: _controller,
-        builder: (context, child) {
-          return Stack(
-            children: [
-              // Logo animado
-              Align(
-                alignment: _logoPositionAnimation.value,
-                child: Image.asset(
-                  'assets/logo.png',
-                  width: 300, // Mantiene el tamaño constante
-                  height: 300, // Mantiene el tamaño constante
-                ),
-              ),
-              if (_controller.isCompleted)
-                Align(
-                  alignment: Alignment.center,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      // Botón "Jugar con banderas"
-                      ElevatedButton(
-                        onPressed: () {
-                          Navigator.pushNamed(context, '/banderas');
-                        },
-                        style: ElevatedButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 20, vertical: 20),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                          textStyle: const TextStyle(fontSize: 18),
-                        ),
-                        child: const Text('Banderas'),
-                      ),
-                      const SizedBox(width: 20),
-                      // Botón "Jugar con capitales"
-                      ElevatedButton(
-                        onPressed: () {
-                          Navigator.pushNamed(context, '/capitales');
-                        },
-                        style: ElevatedButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 20, vertical: 20),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                          textStyle: const TextStyle(fontSize: 18),
-                        ),
-                        child: const Text('Capitales'),
-                      ),
-                    ],
-                  ),
-                ),
-            ],
-          );
-        },
       ),
     );
   }
